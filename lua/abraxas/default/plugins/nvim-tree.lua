@@ -1,21 +1,23 @@
 return {
   "nvim-tree/nvim-tree.lua",
   config = function()
-    -- import nvim-tree plugin safely
     local setup, nvimtree = pcall(require, "nvim-tree")
     if not setup then
       return
     end
 
-    -- recommended settings from nvim-tree documentation
     vim.g.loaded = 1
     vim.g.loaded_netrwPlugin = 1
 
-    -- change color for arrows in tree to light blue
-
-    -- configure nvim-tree
     nvimtree.setup({
       sort_by = "case_sensitive",
+      -- Sincronizar con el directorio del archivo actual
+      sync_root_with_cwd = true,
+      respect_buf_cwd = true,
+      update_focused_file = {
+        enable = true,
+        update_root = true,
+      },
       view = {
         float = {
           enable = true,
@@ -28,18 +30,23 @@ return {
             col = 1,
           },
         },
-
         adaptive_size = true,
       },
       renderer = {
         group_empty = true,
       },
       filters = {
-        dotfiles = true,
+        dotfiles = false,
         custom = { ".DS_Store", "DS_Store" },
         exclude = {},
       },
-
+      filesystem_watchers = {
+        ignore_dirs = {
+          "C:/Windows",
+          "C:/Users/oresc/AppData/Local/Temp",
+          "node_modules",
+        },
+      },
       on_attach = function(bufnr)
         local api = require("nvim-tree.api")
 
@@ -53,12 +60,11 @@ return {
           }
         end
 
-        local keymap = vim.keymap -- for conciseness
+        local keymap = vim.keymap
         keymap.set("n", "<Tab>", api.node.open.edit, opts("Open"))
         keymap.set("n", "<CR>", api.node.open.preview, opts("Open Preview"))
         keymap.set("n", "<C-]>", api.tree.change_root_to_node, opts("CD"))
         keymap.set("n", "<C-e>", api.node.open.replace_tree_buffer, opts("Open: In Place"))
-        -- keymap.set("n", "<C-k>", api.node.show_info_popup, opts("Info"))
         keymap.set("n", "<C-r>", api.fs.rename_sub, opts("Rename: Omit Filename"))
         keymap.set("n", "<C-t>", api.node.open.tab, opts("Open: New Tab"))
         keymap.set("n", "<C-v>", api.node.open.vertical, opts("Open: Vertical Split"))

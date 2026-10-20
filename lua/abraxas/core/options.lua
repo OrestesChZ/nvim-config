@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 opt.number = true
-opt.relativenumber = true
+opt.relativenumber = false
 opt.fillchars = "eob: "
 
 opt.tabstop = 4
@@ -32,13 +32,27 @@ vim.cmd([[set foldexpr=nvim_treesitter#foldexpr()]])
 vim.cmd([[set hidden]])
 vim.cmd([[set noswapfile]])
 vim.cmd([[set nobackup]])
-vim.cmd([[set undodir=~/.vim/undodir]])
+
+-- Windows: undodir en AppData en vez de ~/.vim/undodir
+local undodir = vim.fn.stdpath("data") .. "/undodir"
+if vim.fn.isdirectory(undodir) == 0 then
+  vim.fn.mkdir(undodir, "p")
+end
+vim.cmd("set undodir=" .. undodir)
 vim.cmd([[set undofile]])
+
 vim.cmd([[set scrolloff=10]])
 opt.background = "dark"
 
--- vim.cmd([[autocmd BufRead,BufNewFile *.md set filetype=markdown]])
---
 vim.cmd([[autocmd FileType markdown set syntax=markdown]])
 
 vim.filetype.add({ extension = { templ = "templ" } })
+
+vim.opt.shell = "C:/PROGRA~1/Git/bin/bash.exe"
+vim.opt.shellcmdflag = "-c"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = ""
+
+-- Python path para nvim
+vim.g.python3_host_prog = "C:/Users/oresc/AppData/Local/Programs/Python/Python311/python.exe"
+vim.g.mapleader = " "
